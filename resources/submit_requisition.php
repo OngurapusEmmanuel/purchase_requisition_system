@@ -1,6 +1,6 @@
 <?php
 session_start();
-require 'includes/config.php'; // Database connection file
+require 'config.php'; // Database connection file
 
 // Ensure the user is logged in
 if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'employee') {

@@ -1,18 +1,22 @@
 <?php
 session_start();
-require 'includes/config.php'; // Database connection file
+include_once ("config.php"); // Database connection file
 
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
+if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $email = $_POST['email'];
     $password = $_POST['password'];
-
+if ($con) {
     // Fetch user from database
-    $stmt = $conn->prepare("SELECT id, name, password, role FROM users WHERE email = ?");
+    $stmt = $con->prepare("SELECT `user_id`, `full_name`, `role`, `password` FROM users WHERE `email` = ?");
     $stmt->bind_param("s", $email);
     $stmt->execute();
     $stmt->store_result();
     
-    if ($stmt->num_rows > 0) {
+    if ($stmt->num_rows === 0) {
+        $_SESSION['error'] = "Email not found!";
+        header("Location: login.php");
+        exit();
+    }
         $stmt->bind_result($id, $name, $hashed_password, $role);
         $stmt->fetch();
 
@@ -23,12 +27,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $_SESSION['user_role'] = $role;
 
             // Redirect based on role
-            if ($role == 'employee') {
-                header("Location: dashboard_employee.php");
-            } elseif ($role == 'manager') {
+            if ($role === "admin") {
+                header("Location: admin_dashboard.php");
+            } elseif ($role === "manager") {
                 header("Location: dashboard_manager.php");
             } else {
-                header("Location: dashboard_admin.php");
+                header("Location: admin_dashboard.php");
             }
             exit();
         } else {
@@ -38,4 +42,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $error = "User not found!";
     }
 }
+   
+
 ?>

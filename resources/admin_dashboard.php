@@ -1,6 +1,6 @@
 <?php
-session_start();
-require 'includes/config.php';
+// session_start();
+include_once ("config.php");
 
 
 if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'admin') {
@@ -27,7 +27,8 @@ $stats = $stats_result->fetch_assoc();
 </head>
 <body>
     <?php
-    require 'navbar.php';
+    // include_once ("na")
+    require 'nav.php';
     ?>
 
 <div class="container mt-4">
@@ -44,7 +45,7 @@ $stats = $stats_result->fetch_assoc();
         <thead><tr><th>ID</th><th>Name</th><th>Email</th><th>Role</th><th>Action</th></tr></thead>
         <tbody>
             <?php
-            $user_query = "SELECT `id`, `full_name`, `email`,`department`, `role` FROM users";
+            $user_query = "SELECT `user_id`, `full_name`, `email`,`department`, `role` FROM users";
             $users = $con->query($user_query);
             while ($user = $users->fetch_assoc()) { ?>
                 <tr>
@@ -91,7 +92,7 @@ $stats = $stats_result->fetch_assoc();
                     </div>
                     <div class="mb-3">
                         <label for="deparment" class="form-label">Department</label>
-                        <input type="email" name="deparment" class="form-control" id="deparment" required>
+                        <input type="text" name="deparment" class="form-control" id="deparment" required>
                     </div>
                     <div class="mb-3">
                         <label for="password" class="form-label">Password</label>

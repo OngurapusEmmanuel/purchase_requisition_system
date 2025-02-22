@@ -1,6 +1,6 @@
 <?php
-session_start();
-$user_role = $_SESSION['user_role'] ?? 'guest';
+// session_start();
+// $user_role = $_SESSION['user_role'] ?? 'guest';
 ?>
 
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">

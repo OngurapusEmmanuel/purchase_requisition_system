@@ -52,9 +52,9 @@ CREATE TABLE IF NOT EXISTS purchase_orders (
     `po_number` VARCHAR(50) UNIQUE NOT NULL,
     `supplier_name` VARCHAR(255) NOT NULL,
     `total_cost` DECIMAL(10,2) NOT NULL,
-    `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (requisition_id) REFERENCES requisitions(requisition_id) ON DELETE CASCADE,
-    FOREIGN KEY (processed_by) REFERENCES users(user_id) ON DELETE SET NULL
+    `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    -- FOREIGN KEY (requisition_id) REFERENCES requisitions(requisition_id) ON DELETE CASCADE,
+    -- FOREIGN KEY (processed_by) REFERENCES users(user_id) ON DELETE SET NULL
 );
 
 CREATE TABLE IF NOT EXISTS notifications (
