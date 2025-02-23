@@ -1,3 +1,64 @@
+<?php
+include_once('sessions.php');
+if ($_SERVER["REQUEST_METHOD"] === "POST") {
+    $email = $_POST["email"];
+    $password = $_POST["password"];
+    include_once ('config.php');
+
+    if ($con) {
+        $stmt = $con->prepare("SELECT `user_id`, `full_name`, `password`, `role` FROM users WHERE `email` = ?");
+        $stmt->bind_param("s", $email);
+        $stmt->execute();
+        $stmt->store_result();
+
+        if ($stmt->num_rows === 0) {
+            $_SESSION['error'] = "Email not found!";
+            header("Location: login.php");
+            exit();
+        }
+
+        $stmt->bind_result($id, $name, $hashed_password, $role);
+        $stmt->fetch();
+        
+        if (!$password===$Password || !password_verify($password, $Password))
+        {
+           $_SESSION['error'] = "Invalid password!";
+           header("Location: login.php");
+           exit();
+       }
+
+
+       if ($Role === "admin" || $Role === "Admin") {
+        $_SESSION['user_id'] = $id;
+        $_SESSION['user_name'] = $name;
+        $_SESSION['user_role'] = $role;
+        header("Location: admin-dashboard.php");
+        exit();
+    } elseif ($Role ==="manager"|| "Manager") {
+        $_SESSION['user_id'] = $id;
+        $_SESSION['user_name'] = $name;
+        $_SESSION['user_role'] = $role;
+        header("Location: manager-dashboard.php");
+        exit();
+    }elseif ($Role ==="user"|| "User") {
+        $_SESSION['user_id'] = $id;
+        $_SESSION['user_name'] = $name;
+        $_SESSION['user_role'] = $role;
+        header("Location: user-dashboard.php");
+        exit();
+    } else {
+        $_SESSION['error'] = "Invalid role!";
+        header("Location: login.php");
+        exit();
+    }
+
+    } else {
+        $_SESSION['error'] = "Database connection error!";
+        header("Location: login.php");
+        exit();
+    }
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -36,67 +97,12 @@
 </head>
 <body>
 
-<?php
-session_start();
-include_once("config.php");
 
-if ($_SERVER["REQUEST_METHOD"] === "POST") {
-    $email = trim($_POST['email']);
-    $password = $_POST['password'];
-
-    if ($con) {
-        $stmt = $con->prepare("SELECT `user_id`, `full_name`, `password`, `role` FROM users WHERE `email` = ?");
-        $stmt->bind_param("s", $email);
-        $stmt->execute();
-        $stmt->store_result();
-
-        if ($stmt->num_rows === 0) {
-            $_SESSION['error'] = "Email not found!";
-            header("Location: login.php");
-            exit();
-        }
-
-        $stmt->bind_result($id, $name, $hashed_password, $role);
-        $stmt->fetch();
-        $stmt->close();
-
-        if (password_verify($password, $hashed_password)) {
-            $_SESSION['user_id'] = $id;
-            $_SESSION['user_name'] = $name;
-            $_SESSION['user_role'] = $role;
-
-            switch ($role) {
-                case "admin":
-                    header("Location: admin_dashboard.php");
-                    break;
-                case "manager":
-                    header("Location: dashboard_manager.php");
-                    break;
-                default:
-                    header("Location: user_dashboard.php");
-            }
-            exit();
-        } else {
-            $_SESSION['error'] = "Invalid credentials!";
-            header("Location: login.php");
-            exit();
-        }
-    } else {
-        $_SESSION['error'] = "Database connection error!";
-        header("Location: login.php");
-        exit();
-    }
-}
-?>
 
 <div class="login-container">
     <h4 class="text-center mb-4">Login to Your Account</h4>
 
-    <?php if (isset($_SESSION['error'])): ?>
-        <div class="alert alert-danger"><?php echo $_SESSION['error']; unset($_SESSION['error']); ?></div>
-    <?php endif; ?>
-
-    <form action="" method="POST">
+    <form action="" method="post">
         <div class="mb-3">
             <label for="email" class="form-label">Email Address</label>
             <input type="email" name="email" class="form-control" id="email" required>
