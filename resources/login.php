@@ -3,7 +3,7 @@ include_once('sessions.php');
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $email = $_POST["email"];
     $password = $_POST["password"];
-    include_once ('config.php');
+    include_once ('includes/config.php');
 
     if ($con) {
         $stmt = $con->prepare("SELECT `user_id`, `full_name`, `password`, `role` FROM users WHERE `email` = ?");
